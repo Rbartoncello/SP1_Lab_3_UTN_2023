@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css">
+    <title>Document</title>
+  </head>
+  <body id="cuerpo">
+    <div class="spinner-container" id="spinner">
+      <div class="spinner"></div>
+    </div>
+    <form id="form-data-container">
+      <div id="title-form">
+          Fomulario Datossdasd
+      </div>
+      <div id="table-container">
+        <table id="data-table">
+            <thead id="header"></thead>
+            <tbody id="table-body"></tbody>
+        </table>
+    </div>
+    <div id="buttons-container">
+      <div>
+          <button type="submit" id="btn_add">Agregar</button>
+      </div>
+  </div>
+    </form>
+    <form id="form-amb-container" class="hidden">
+      <h1 id="title-form">
+          Fomulario ABM
+      </h1>
+      <div id="inputs-container">
+          <div id="default-inputs-container"></div>
+          <div id="input-field">
+              <label for="dll-type-person">Tipo:</label>
+              <select id="dll-type-person" name="types-people">
+                  <option value="client">Cliente</option>
+                  <option value="employer">Empleado</option>
+              </select>
+          </div>
+          <div id="dynamic-inputs-container"></div>
+      </div>
+      <div id="buttons-container">
+          <div>
+              <button type="submit" id="btn-accept">Aceptar</button>
+              <button type="button" id="btn-cancel">Cancelar</button>
+          </div>
+      </div>
+  </form>
+  </body>
+  <!-- <script src="dataString.js"></script>
+    <script src="constant.js"></script>
+    <script src="Classes/Vehiculo.js"></script>
+    <script src="Classes/Aereo.js"></script>
+    <script src="Classes/Terrestre.js"></script>
+    <script src="enum.js"></script>
+    <script src="utils.js"></script> -->
+  <script src="server/get.js"></script>
+  <script src="constant.js"></script>
+  <script src="class//people.js"></script>
+  <script src="class/employer.js"></script>
+  <script src="class/client.js"></script>
+  <script src="script.js"></script>
+</html>
