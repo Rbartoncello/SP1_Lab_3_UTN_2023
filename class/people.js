@@ -1,35 +1,19 @@
 class People {
-    constructor(id, name, lastname, years) {
+    constructor(id, nombre, apellido, edad) {
         this.id = id;
-        this.name = name;
-        this.lastname = lastname;
-        this.years = years;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.edad = edad;
     }
-    
-    mostrarInformacion() {
-        console.log(`ID: ${this.id}`);
-        console.log(`name: ${this.name}`);
-        console.log(`lastname: ${this.lastname}`);
-        console.log(`years: ${this.years}`);
-    }
-    
+
     toString() {
-        return `ID: ${this.id}, name: ${this.name}, lastname: ${this.lastname}, years: ${this.years}`;
-    }
-    
-    toJson() {
-        return JSON.stringify({
-            id: this.id,
-            name: this.name,
-            lastname: this.lastname,
-            years: this.years
-        });
+        return `ID: ${this.id}, nombre: ${this.nombre}, apellido: ${this.apellido}, edad: ${this.edad}`;
     }
 
     update(data){
         this.id = Number(data.id);
-        this.name = data.name;
-        this.lastname = data.lastname;
-        this.years = Number(data.years);
+        this.nombre = data.nombre;
+        this.apellido = data.apellido;
+        this.edad = Number(data.edad);
     }
 }  

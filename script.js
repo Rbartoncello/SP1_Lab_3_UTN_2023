@@ -9,7 +9,7 @@ const addTable = () => {
   const headers = $("header");
   headers.innerHTML = "";
 
-  const selectedInputs = [...inputsDefault, ...inputsEmployer, ...inputsClient, ...inputsActions];
+  const selectedInputs = [...inputsDefault, ...inputsPlayer, ...inputsProfessional, ...inputsActions];
   selectedInputs.forEach((hearder) => {
     const th = document.createElement("th");
     th.id = `header-${hearder.id}`;
@@ -20,7 +20,7 @@ const addTable = () => {
 
 const createRow = (item) => {
   const tr = document.createElement("tr");
-  const selectedInputs = [...inputsDefault, ...inputsEmployer, ...inputsClient, ...inputsActions];
+  const selectedInputs = [...inputsDefault, ...inputsPlayer, ...inputsProfessional, ...inputsActions];
   const actions = ["edit", "delete"]
 
   selectedInputs.forEach((header) => {
@@ -120,7 +120,7 @@ const addInputByDefault = (initialValues) => {
   const selectTypeOfPerson = $("dll-type-person");
 
   if (initialValues !== undefined) {
-    selectTypeOfPerson.value = initialValues instanceof Employer ? "employer" : "client";
+    selectTypeOfPerson.value = initialValues instanceof Player ? "player" : "professional";
     selectTypeOfPerson.disabled = true;
   } else {
     selectTypeOfPerson.disabled = false;
@@ -132,7 +132,7 @@ const addInputByTypePerson = (initialValues) => {
   inputsContainer.innerHTML = "";
 
   const typeField = $("dll-type-person");
-  const selectedInputs = typeField.value === "client" ? inputsClient : inputsEmployer;
+  const selectedInputs = typeField.value === "professional" ? inputsProfessional : inputsPlayer;
 
   selectedInputs.map((input) => {
     const inputContainer = createInputField(input.name, input.type);
@@ -148,22 +148,24 @@ const addInputByTypePerson = (initialValues) => {
 
 const addPerson = (item) => {
   const personObject =
-    "shoppings" in item && "phone" in item
-      ? new Client(
+    "titulo" in item && "facultad" in item
+      ? new Professional(
           item.id,
-          item.name,
-          item.lastname,
-          item.years,
-          item.shoppings,
-          item.phone
+          item.nombre,
+          item.apellido,
+          item.edad,
+          item.titulo,
+          item.facultad,
+          item.añoGraduacion,
         )
-      : new Employer(
+      : new Player(
           item.id,
-          item.name,
-          item.lastname,
-          item.years,
-          item.salary,
-          item.sales
+          item.nombre,
+          item.apellido,
+          item.edad,
+          item.equipo,
+          item.posicion,
+          item.cantidadGoles,
         );
 
   people.push(personObject);
@@ -216,30 +218,30 @@ const handleAbmFormSubmit = (e) => {
   e.stopPropagation();
 };
 
-async function post(data) {
+const post = (data) => {
   document.getElementById('spinner').style.display = 'flex';
-  const dataToSend = data
-  try {
-    const response = await fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(dataToSend)
-    });
-    document.getElementById('spinner').style.display = 'none';
-    showAbmForm("form-data-container", "form-amb-container");
-    
-    if (!response.ok) {
-      throw new Error(`Error de red: ${response.status}`);
-    }
+  const dataToSend = data;
 
-    const data = await response.json();
-    console.log('Solicitud POST exitosa:', data);
-    editPerson(dataToSend);
-  } catch (error) {
-    alert(error)
-  }
+  fetch(apiUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(dataToSend)
+  })
+    .then(response => {
+      document.getElementById('spinner').style.display = 'none';
+      showAbmForm("form-data-container", "form-amb-container");
+
+      if (!response.ok) {
+        throw new Error(`Error de red: ${response.status}`);
+      }
+
+      editPerson(dataToSend);
+    })
+    .catch(error => {
+      alert(error);
+    });
 }
 
 toggleButtonsDisabled = (disabled) => {
@@ -276,35 +278,32 @@ async function deleteData(id) {
   }
 }
 
-const put = (person) => {
+const put = async (person) => {
   document.getElementById('spinner').style.display = 'flex';
-  
-  fetch(apiUrl, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(person)
-  })
-    .then(response => {
-      document.getElementById('spinner').style.display = 'none';
-      
 
-      if (!response.ok) {
-        throw new Error(`Error de red: ${response.status}`);
-      }
-      return response.json();
-    })
-    .then(data => {
-      console.log('Datos actualizados correctamente:', data);
-      person.id = data.id;
-      addPerson(person);
-      showAbmForm("form-data-container", "form-amb-container");
-    })
-    .catch(error => {
-      alert('Error durante la actualización:', error);
+  try {
+    const response = await fetch(apiUrl, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(person)
     });
-}
+
+    document.getElementById('spinner').style.display = 'none';
+
+    if (!response.ok) {
+      throw new Error(`Error de red: ${response.status}`);
+    }
+
+    const data = await response.json();
+    person.id = data.id;
+    addPerson(person);
+    showAbmForm("form-data-container", "form-amb-container");
+  } catch (error) {
+    alert('Error durante la actualización:', error);
+  }
+};
 
 const handleEdit = (e) => {
   const row = e.target.closest("tr");
@@ -363,52 +362,55 @@ const onClickOnAction = () => {
   });
 };
 
-
 var xhttp = new XMLHttpRequest(); //Instancio el objeto
-    xhttp.onreadystatechange = function () {
-    if (xhttp.readyState == 4 && xhttp.status == 200) {
-        const data = JSON.parse(xhttp.responseText);
-        people = data.map((item) => {
-          return "ventas" in item && "sueldo" in item
-            ? new Employer(
-                item.id,
-                item.nombre,
-                item.apellido,
-                item.edad,
-                item.sueldo,
-                item.ventas
-              )
-            : new Client(
-                item.id,
-                item.nombre,
-                item.apellido,
-                item.edad,
-                item.compras,
-                item.telefono
-              );
-        });
-      console.table(people)
-      document.getElementById('spinner').style.display = 'none';
-      showAbmForm("form-data-container", "form-amb-container");
-      addTable();
-      uploadDataTable(people);
+xhttp.onreadystatechange = function () {
+  if (xhttp.readyState == 4 && xhttp.status == 200) {
+      const data = JSON.parse(xhttp.responseText);
+      people = data.map((item) => {
+        return "facultad" in item && "titulo" in item
+          ? new Professional(
+              item.id,
+              item.nombre,
+              item.apellido,
+              item.edad,
+              item.titulo,
+              item.facultad,
+              item.añoGraduacion,
+            )
+          : new Player(
+              item.id,
+              item.nombre,
+              item.apellido,
+              item.edad,
+              item.equipo,
+              item.posicion,
+              item.cantidadGoles,
+            );
+      });
+    console.table(people)
+    document.getElementById('spinner').style.display = 'none';
+    showAbmForm("form-data-container", "form-amb-container");
+    addTable();
+    uploadDataTable(people);
 
-      const btnAdd = $("btn_add");
-      btnAdd.addEventListener("click", (e) => handleDataFormSubmit(e));
+    const btnAdd = $("btn_add");
+    btnAdd.addEventListener("click", (e) => handleDataFormSubmit(e));
 
-      onClickOnAction();
+    onClickOnAction();
 
-      const abmForm = $("form-amb-container");
-      abmForm.addEventListener("submit", (e) => handleAbmFormSubmit(e));
+    const abmForm = $("form-amb-container");
+    abmForm.addEventListener("submit", (e) => handleAbmFormSubmit(e));
 
-      $("dll-type-person").addEventListener("click", () => {
-        addInputByTypePerson();
-      })
-      
-      const btnCancel = $("btn-cancel");
-      btnCancel.addEventListener("click", () => showAbmForm("form-data-container", "form-amb-container"));
-    }
-  };
+    $("dll-type-person").addEventListener("click", () => {
+      addInputByTypePerson();
+    })
+    
+    const btnCancel = $("btn-cancel");
+    btnCancel.addEventListener("click", () => showAbmForm("form-data-container", "form-amb-container"));
+  } else if(xhttp.readyState == 4 && xhttp.status != 200) {
+    alert()
+  }
+};
 xhttp.open("GET", apiUrl, true);
 xhttp.setRequestHeader("encabezado", "valor");
 xhttp.send();

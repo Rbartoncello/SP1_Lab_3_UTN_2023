@@ -1,18 +1,20 @@
 const inputsDefault = [
-  { name: "Id", id: "id", type: "text" },
-  { name: "Nombre", id: "name", type: "text" },
-  { name: "Apellido", id: "lastname", type: "text"},
-  { name: "Edad", id: "years", type: "number", min: 0 },
+  { name: "Id", id: "id", type: "number"},
+  { name: "Nombre", id: "nombre", type: "text" },
+  { name: "Apellido", id: "apellido", type: "text"},
+  { name: "Edad", id: "edad", type: "number", min: 15},
 ];
 
-const inputsEmployer = [
-  { name: "Salario", id: "salary", type: "number", min: 0 },
-  { name: "Ventas", id: "sales", type: "number", min: 0 },
+const inputsPlayer = [
+  { name: "Equipo", id: "equipo", type: "text" },
+  { name: "Posicion", id: "posicion", type: "text" },
+  { name: "Cantidad de goles", id: "cantidadGoles", type: "number", min: -1 },
 ];
 
-const inputsClient = [
-  { name: "Compras", id: "shoppings", type: "number", min: 0 },
-  { name: "Telefono", id: "phone", type: "number", min: 0 },
+const inputsProfessional = [
+  { name: "Titulo", id: "titulo", type: "text" },
+  { name: "Facultad", id: "facultad", type: "text" },
+  { name: "Año de graduacion", id: "añoGraduacion", type: "number", min: 1950 },
 ];
 
 const inputsActions = [
